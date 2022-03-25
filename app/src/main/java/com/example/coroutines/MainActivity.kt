@@ -15,18 +15,21 @@ class MainActivity : AppCompatActivity() {
         val handler = CoroutineExceptionHandler { _, exception ->
             println("CoroutineExceptionHandler got $exception")
         }
+
         val scope = CoroutineScope(Dispatchers.IO + Job()).launch(handler) {
-            while(true){
+            repeat(22){
                 runOnUiThread {
                     binding.textView.text = Random.nextInt().toString()
                 }
                 delay(100)
             }
+            this.cancel()
 
         }
 
         binding.button.setOnClickListener {
             scope.cancel()
+            binding.textView.text = scope.isCancelled.toString()
         }
         setContentView(binding.root)
     }
